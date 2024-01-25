@@ -33,46 +33,60 @@ data=Dataset.load_from_df(books_ratings[["User-ID","ISBN","Book-Rating"]][:10000
 model=SVD()
 cross_validate(model, data, measures=['RMSE','MAE'], cv=4)
 
-
-def display_image_from_link_with_title(image_link, title):
-    try:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
-
-        # Fetch the image from the link with headers
-        response = requests.get(image_link, headers=headers)
-        response.raise_for_status()  # Check for request errors
-
-        # Open the image using PIL
-        img = Image.open(BytesIO(response.content))
-
-        # Display the image in the Streamlit app with the title
-        st.image(img, caption=f"Title: {title}", use_column_width=True)
-
-    except Exception as e:
-        st.error(f"Error: {e}")
-
-# Iterate over the zipped lists and display images with titles in Streamlit
-for image_link, title in zip(books_urls, books_titles):
-    display_image_from_link_with_title(image_link, title)
-
-def Recommend(user_id):
+def Recommend(y):
     books_titles = list()
     books_urls = list()
+    books_ratings['Estimate_Score']=books_ratings['ISBN'].apply(lambda x: model.predict(y, x).est)
+    lst_movie_ID = list(books_ratings.sort_values("Estimate_Score", ascending = False)["ISBN"].unique())[:5]
 
-    user_ratings = books_ratings[books_ratings['User-ID'] == user_id]
+    # lst_movie_ID
+    
+    books_titles = list()
+    for val in lst_movie_ID:
+        matching_books = list(books_details[books_details.ISBN == val]["Book-Title"])
 
-    # Filter out books that the user has already rated
-    unrated_books = books_ratings[~books_ratings['ISBN'].isin(user_ratings['ISBN'])]
+        if matching_books:
+            # If the list is not empty, append the first element
+            books_titles.append(matching_books[0])
+        else:
+            # Handle the case where no matching book is found
+            books_titles.append("No Title Found")
 
-    unrated_books['Estimate_Score'] = unrated_books['ISBN'].apply(lambda x: model.predict(user_id, x).est)
-    top_rated_books = unrated_books.sort_values("Estimate_Score", ascending=False).head(5)
+    # books_titles
 
-    # Extract information for recommended books
-    books_titles = list(top_rated_books['Book-Title'])
-    books_urls = list(top_rated_books['Image-URL-S'])
+    books_urls = list()
+    for val1 in lst_movie_ID:
+        matching_urls = list(books_details[books_details.ISBN == val1]["Image-URL-S"])
 
-    # Display recommended books
+        if matching_urls:
+            # If the list is not empty, append the first element
+            books_urls.append(matching_urls[0])
+        else:
+            # Handle the case where no matching URL is found
+            books_urls.append("No URL Found")
+
+# Now 'books_urls' contains the URLs or "No URL Found" for each ISBN in 'lst_movie_ID'
+
+
+    def display_image_from_link_with_title(image_link, title):
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            }
+
+            # Fetch the image from the link with headers
+            response = requests.get(image_link, headers=headers)
+            response.raise_for_status()  # Check for request errors
+
+            # Open the image using PIL
+            img = Image.open(BytesIO(response.content))
+
+            # Display the image in the Streamlit app with the title
+            st.image(img, caption=f"Title: {title}", use_column_width=True)
+
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+    # Iterate over the zipped lists and display images with titles in Streamlit
     for image_link, title in zip(books_urls, books_titles):
         display_image_from_link_with_title(image_link, title)
