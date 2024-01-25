@@ -52,10 +52,10 @@ data
 model=SVD()
 
 cross_validate(model, data, measures=['RMSE','MAE'], cv=4)
-books_titles = list()
-books_urls = list()
 
 def Recommend(y):
+    books_titles = list()
+    books_urls = list()
     books_ratings['Estimate_Score']=books_ratings['ISBN'].apply(lambda x: model.predict(y, x).est)
 
 
