@@ -35,34 +35,38 @@ def Recommend(y):
     cross_validate(model, data, measures=['RMSE','MAE'], cv=4)
     books_titles = list()
     books_urls = list()
-    books_ratings['Estimate_Score']=books_ratings['ISBN'].apply(lambda x: model.predict(y, x).est)
-    lst_movie_ID = list(books_ratings.sort_values("Estimate_Score", ascending = False)["ISBN"].unique())[:5]
-
-    # lst_movie_ID
+    try:
+        books_ratings['Estimate_Score']=books_ratings['ISBN'].apply(lambda x: model.predict(y, x).est)
+        lst_movie_ID = list(books_ratings.sort_values("Estimate_Score", ascending = False)["ISBN"].unique())[:5]
     
-    books_titles = list()
-    for val in lst_movie_ID:
-        matching_books = list(books_details[books_details.ISBN == val]["Book-Title"])
+        # lst_movie_ID
+        
+        books_titles = list()
+        for val in lst_movie_ID:
+            matching_books = list(books_details[books_details.ISBN == val]["Book-Title"])
+    
+            if matching_books:
+                # If the list is not empty, append the first element
+                books_titles.append(matching_books[0])
+            else:
+                # Handle the case where no matching book is found
+                books_titles.append("No Title Found")
+    
+        # books_titles
+    
+        books_urls = list()
+        for val1 in lst_movie_ID:
+            matching_urls = list(books_details[books_details.ISBN == val1]["Image-URL-S"])
+    
+            if matching_urls:
+                # If the list is not empty, append the first element
+                books_urls.append(matching_urls[0])
+            else:
+                # Handle the case where no matching URL is found
+                books_urls.append("No URL Found")
+    except:
+        st.warning("Invalid user ID")
 
-        if matching_books:
-            # If the list is not empty, append the first element
-            books_titles.append(matching_books[0])
-        else:
-            # Handle the case where no matching book is found
-            books_titles.append("No Title Found")
-
-    # books_titles
-
-    books_urls = list()
-    for val1 in lst_movie_ID:
-        matching_urls = list(books_details[books_details.ISBN == val1]["Image-URL-S"])
-
-        if matching_urls:
-            # If the list is not empty, append the first element
-            books_urls.append(matching_urls[0])
-        else:
-            # Handle the case where no matching URL is found
-            books_urls.append("No URL Found")
 
 # Now 'books_urls' contains the URLs or "No URL Found" for each ISBN in 'lst_movie_ID'
 
@@ -109,7 +113,7 @@ def Recommend(y):
                     col.image(img, caption=f"Title: {title}", use_column_width=True)
     
         except Exception as e:
-            st.error(f"Error: {e}")
+            pass
     
     # Use the function to display images in a 3-row, 2-column layout
     display_images_in_layout(books_urls, books_titles, num_rows=3, num_cols=2)
