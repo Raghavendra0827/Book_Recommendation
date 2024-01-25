@@ -28,12 +28,11 @@ books_ratings=books_ratings[~books_ratings['User-ID'].isin(drop_cust_list)]
 books_ratings.shape
 books_ratings
 
-reader=Reader()
-data=Dataset.load_from_df(books_ratings[["User-ID","ISBN","Book-Rating"]][:100000], reader)
-model=SVD()
-cross_validate(model, data, measures=['RMSE','MAE'], cv=4)
-
 def Recommend(y):
+    reader=Reader()
+    data=Dataset.load_from_df(books_ratings[["User-ID","ISBN","Book-Rating"]][:100000], reader)
+    model=SVD()
+    cross_validate(model, data, measures=['RMSE','MAE'], cv=4)
     books_titles = list()
     books_urls = list()
     books_ratings['Estimate_Score']=books_ratings['ISBN'].apply(lambda x: model.predict(y, x).est)
