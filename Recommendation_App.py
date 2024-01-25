@@ -13,7 +13,6 @@ def main():
     # Get user input for book genre
     book_genre = st.numeric_input("User ID")
     Recommend(book_genre)
-    st.success(f"We recommend the book: {recommended_book}")
 
 if __name__ == "__main__":
     main()
