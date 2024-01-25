@@ -67,25 +67,50 @@ def Recommend(y):
 # Now 'books_urls' contains the URLs or "No URL Found" for each ISBN in 'lst_movie_ID'
 
 
-    def display_image_from_link_with_title(image_link, title):
+    def display_images_in_layout(image_links, titles, num_rows=3, num_cols=2):
         try:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             }
-
-            # Fetch the image from the link with headers
-            response = requests.get(image_link, headers=headers)
-            response.raise_for_status()  # Check for request errors
-
-            # Open the image using PIL
-            img = Image.open(BytesIO(response.content))
-
-            # Display the image in the Streamlit app with the title
-            st.image(img, caption=f"Title: {title}", use_column_width=True)
-
+    
+            # Calculate the number of images and rows
+            num_images = len(image_links)
+            num_full_rows = num_images // num_cols
+            remaining_cols = num_images % num_cols
+    
+            # Iterate over rows
+            for i in range(num_full_rows):
+                # Create a new row with the specified number of columns
+                row_images, row_titles = image_links[i * num_cols:(i + 1) * num_cols], titles[i * num_cols:(i + 1) * num_cols]
+                cols = st.columns(num_cols)
+    
+                # Display images in the current row
+                for col, (image_link, title) in zip(cols, zip(row_images, row_titles)):
+                    # Fetch the image from the link with headers
+                    response = requests.get(image_link, headers=headers)
+                    response.raise_for_status()  # Check for request errors
+    
+                    # Open the image using PIL
+                    img = Image.open(BytesIO(response.content))
+    
+                    # Display the image in the Streamlit app with the title
+                    col.image(img, caption=f"Title: {title}", use_column_width=True)
+    
+            # Display remaining images in the last row
+            if remaining_cols > 0:
+                row_images, row_titles = image_links[-remaining_cols:], titles[-remaining_cols:]
+                cols = st.columns(remaining_cols)
+    
+                # Display images in the last row
+                for col, (image_link, title) in zip(cols, zip(row_images, row_titles)):
+                    response = requests.get(image_link, headers=headers)
+                    response.raise_for_status()
+                    img = Image.open(BytesIO(response.content))
+                    col.image(img, caption=f"Title: {title}", use_column_width=True)
+    
         except Exception as e:
             st.error(f"Error: {e}")
+    
+    # Use the function to display images in a 3-row, 2-column layout
+    display_images_in_layout(books_urls, books_titles, num_rows=3, num_cols=2)
 
-    # Iterate over the zipped lists and display images with titles in Streamlit
-    for image_link, title in zip(books_urls, books_titles):
-        display_image_from_link_with_title(image_link, title)
