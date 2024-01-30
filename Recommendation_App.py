@@ -21,6 +21,7 @@ html_code = f"""
         }}
     </style>
 """
+st.markdown(html_code, unsafe_allow_html=True)
 
 def main():
     st.title("Book Recommendation System")
