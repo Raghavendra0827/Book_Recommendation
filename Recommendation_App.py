@@ -1,7 +1,7 @@
 import streamlit as st
 from book_recommendation_final import userid, Recommend
 
-background_image = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fdribbble.com%2Fshots%2F6688091-Book-App-Icon&psig=AOvVaw1W2vGDT-xsVc9StaEqlv--&ust=1706713299911000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCJCT2NqwhYQDFQAAAAAdAAAAABAd'
+background_image = 'https://cdn.dribbble.com/users/1236773/screenshots/6688091/book-icon_4x.png'
 html_code = f"""
     <style>
         body {{
