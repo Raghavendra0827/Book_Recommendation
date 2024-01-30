@@ -39,6 +39,6 @@ def main():
         if user_id in list(u_id["User-ID"]):
             Recommend(user_id)
         else:
-            st.warnings("Invalid User_ID")
+            st.warning("Invalid User_ID")
 if __name__ == "__main__":
     main()
