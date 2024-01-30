@@ -19,16 +19,17 @@ dataset_book_summary =books_ratings.groupby('ISBN')['Book-Rating'].agg(["count"]
 # dataset_book_summary.sort_values(["count"], ascending = False)
 # dataset_book_summary["count"].value_counts()
 # dataset_book_summary["count"].unique()
-drop_book_list=dataset_book_summary[dataset_book_summary['count']<50].index
+drop_book_list=dataset_book_summary[dataset_book_summary['count']<20].index
 dataset_cust_summary=books_ratings.groupby('User-ID')['Book-Rating'].agg(["count"])
 dataset_cust_summary.sort_values(["count"], ascending = False)
-drop_cust_list=dataset_cust_summary[dataset_cust_summary['count']<50].index
+drop_cust_list=dataset_cust_summary[dataset_cust_summary['count']<20].index
 books_ratings=books_ratings[~books_ratings['ISBN'].isin(drop_book_list)]
 books_ratings=books_ratings[~books_ratings['User-ID'].isin(drop_cust_list)]
 # books_ratings.shape
 # books_ratings
+booksss = pd.DataFrame(books_ratings['User-ID'].unique(), columns = ["User-ID"]
 def userid():
-    return books_ratings
+    return booksss
 def Recommend(y):
     reader=Reader()
     data=Dataset.load_from_df(books_ratings[["User-ID","ISBN","Book-Rating"]][:100000], reader)
