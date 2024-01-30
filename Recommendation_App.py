@@ -34,7 +34,7 @@ def main():
     st.write(u_id["User-ID"])
 
     # Get user input for user id
-    user_id = st.number_input("User ID", value=626)
+    user_id = st.number_input("User ID", value=242)
     if st.button("Recommend Book"):
         if user_id in list(u_id["User-ID"]):
             Recommend(user_id)
