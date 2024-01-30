@@ -35,10 +35,10 @@ def main():
 
     # Get user input for user id
     user_id = st.number_input("User ID", value=626)
-    if user_id not in list(u_id["User-ID"]):
-        main()
     if st.button("Recommend Book"):
-        Recommend(user_id)
-
+        if user_id in list(u_id["User-ID"]):
+            Recommend(user_id)
+        else:
+            st.warnings("Invalid User_ID")
 if __name__ == "__main__":
     main()
