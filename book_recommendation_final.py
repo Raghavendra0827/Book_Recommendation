@@ -27,7 +27,7 @@ books_ratings=books_ratings[~books_ratings['ISBN'].isin(drop_book_list)]
 books_ratings=books_ratings[~books_ratings['User-ID'].isin(drop_cust_list)]
 # books_ratings.shape
 # books_ratings
-def id():
+def uid():
     return books_ratings
 def Recommend(y):
     reader=Reader()
