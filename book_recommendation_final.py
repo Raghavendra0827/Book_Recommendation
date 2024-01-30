@@ -27,8 +27,8 @@ books_ratings=books_ratings[~books_ratings['ISBN'].isin(drop_book_list)]
 books_ratings=books_ratings[~books_ratings['User-ID'].isin(drop_cust_list)]
 # books_ratings.shape
 # books_ratings
-U_ID = pd.DataFrame(books_ratings["User-ID"], columns = ["User_ID"])
-
+def id():
+    return books_ratings
 def Recommend(y):
     reader=Reader()
     data=Dataset.load_from_df(books_ratings[["User-ID","ISBN","Book-Rating"]][:100000], reader)
