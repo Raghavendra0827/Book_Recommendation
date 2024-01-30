@@ -33,9 +33,8 @@ def main():
 
     # Get user input for user id
     user_id = st.number_input("User ID", value=276726)
-    
-    Recommend(user_id)
+    if st.button("Recommend Book"):
+        Recommend(user_id)
 
 if __name__ == "__main__":
-    if st.button("Recommend Book"):
-        main()
+    main()
