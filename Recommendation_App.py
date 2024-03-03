@@ -26,10 +26,10 @@ st.markdown(html_code, unsafe_allow_html=True)
 def main():
     st.title("Book Recommendation System")
     u_id = userid()
-    st.write(u_id["User-ID"])
+    # st.write(u_id["User-ID"])
 
     # Get user input for user id
-    user_id = st.number_input("User ID", value=242)
+    user_id = st.number_input("User ID", u_id["User-ID"].to_list())
     if st.button("Recommend Book"):
         if user_id in list(u_id["User-ID"]):
             Recommend(user_id)
